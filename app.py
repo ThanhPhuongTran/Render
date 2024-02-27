@@ -22,10 +22,9 @@
 
 # if __name__ == '__main__':
 #     app.run(debug=True)
-from flask import Flask, request
+from flask import Flask
 import subprocess
 import random
-import socket
 import requests
 
 app = Flask(__name__)
