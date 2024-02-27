@@ -43,7 +43,8 @@ def save_ip_to_file(ip_address):
 def index():
     ip_address = request.remote_addr
     save_ip_to_file(ip_address)
-    commit_to_github()
+    print(ip_address)
+    # commit_to_github()
 
     return 'IP đã được lưu vào tệp tin.'
 
