@@ -54,7 +54,7 @@ def save_ip_to_file(ip_address):
 def index():
     ip_address = get_client_ip()
     save_ip_to_file(ip_address)
-    print(ip_address)
+    print("ip la: "+str(ip_address))
     # commit_to_github()
 
     return 'IP đã được lưu vào tệp tin.'
