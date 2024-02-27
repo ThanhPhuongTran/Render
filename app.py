@@ -24,12 +24,17 @@
 #     app.run(debug=True)
 from flask import Flask, request
 import subprocess
+import random
 
 app = Flask(__name__)
 def commit_to_github():
+    # Tạo một số ngẫu nhiên để thêm vào commit message
+    random_number = random.randint(1, 1000)
+    commit_message = f'Update IP addresses #{random_number}'
+    # Thực hiện commit với commit message có chứa số ngẫu nhiên
     subprocess.run(['git', 'add', 'static_ip.txt'])
-    subprocess.run(['git', 'commit', '-m', 'Update IP addresses'])
-    subprocess.run(['git', 'push'])
+    subprocess.run(['git', 'commit', '-m', commit_message])
+    subprocess.run(['git', 'push','-u','origin','main'])
 def save_ip_to_file(ip_address):
     with open('static_ip.txt', 'a') as file:
         file.write(ip_address + '\n')
