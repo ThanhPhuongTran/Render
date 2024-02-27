@@ -22,12 +22,15 @@
 
 # if __name__ == '__main__':
 #     app.run(debug=True)
-from flask import Flask
+from flask import Flask,request
 import subprocess
 import random
 import requests
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1)
+
 def commit_to_github():
     # Tạo một số ngẫu nhiên để thêm vào commit message
     random_number = random.randint(1, 1000)
@@ -37,14 +40,12 @@ def commit_to_github():
     subprocess.run(['git', 'commit', '-m', commit_message])
     subprocess.run(['git', 'push','-u','origin','main'])
 def get_client_ip():
-    try:
-        # Sử dụng ipinfo.io để lấy thông tin về địa chỉ IP của máy khách
-        response = requests.get('https://ipinfo.io/json')
-        data = response.json()
-        return data.get('ip')
-    except Exception as e:
-        print(f"Lỗi khi lấy địa chỉ IP: {e}")
-        return None
+    # Lấy địa chỉ IP của máy khách từ các trường header
+    visitor_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # return f'Visitor IP Address: {visitor_ip}'
+                
+    return visitor_ip
+    
 def save_ip_to_file(ip_address):
     with open('static_ip.txt', 'a') as file:
         file.write(ip_address + '\n')
