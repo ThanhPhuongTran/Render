@@ -26,6 +26,8 @@ from flask import Flask, request
 import subprocess
 import random
 import socket
+import requests
+
 app = Flask(__name__)
 def commit_to_github():
     # Tạo một số ngẫu nhiên để thêm vào commit message
@@ -35,17 +37,22 @@ def commit_to_github():
     subprocess.run(['git', 'add', 'static_ip.txt'])
     subprocess.run(['git', 'commit', '-m', commit_message])
     subprocess.run(['git', 'push','-u','origin','main'])
-def get_static_ip():
-    hostname = socket.gethostname()
-    static_ip = socket.gethostbyname(hostname)
-    return static_ip
+def get_client_ip():
+    try:
+        # Sử dụng ipinfo.io để lấy thông tin về địa chỉ IP của máy khách
+        response = requests.get('https://ipinfo.io/json')
+        data = response.json()
+        return data.get('ip')
+    except Exception as e:
+        print(f"Lỗi khi lấy địa chỉ IP: {e}")
+        return None
 def save_ip_to_file(ip_address):
     with open('static_ip.txt', 'a') as file:
         file.write(ip_address + '\n')
 
 @app.route('/')
 def index():
-    ip_address = get_static_ip()
+    ip_address = get_client_ip()
     save_ip_to_file(ip_address)
     print(ip_address)
     # commit_to_github()
